@@ -20,10 +20,13 @@ namespace FanAPI
             client.BaseAddress = new Uri("http://www.anapioficeandfire.com/api/");
         }
 
-        //static List<Character> CharacterList()
-        //{
-        //    var response = client.GetAsync("characters");
-        //}
+        static List<Character> GetAll(int pagenumber)
+        {
+            var response = client.GetAsync($"characters?page={pagenumber}").Result;
+            List<Character> allcharacters = response.Content.ReadAsAsync<List<Character>>().Result;
+            return allcharacters;
+        }
+
 
         static Character GetCharacter(string id)
         {
@@ -35,12 +38,52 @@ namespace FanAPI
         {
             Console.WriteLine("Welcome to the ASOIAF API");
             SetUpClient();
-            var jon = GetCharacter("583");
-            List<House> jonshouses = jon.AllegianceDetail(client);
-            foreach (House house in jonshouses)
+            MainMenu();
+        }
+
+        private static void CharacterList()
+        {
+            for (int i = 1; i < 215;)
             {
-                Console.WriteLine(house.Name);
+                var characters = GetAll(i);
+                foreach (var character in characters)
+                {
+                    string path = character.URL.ToString();
+                    int pos = path.LastIndexOf("/") + 1;
+                    Console.WriteLine(" ");
+                    Console.WriteLine((path.Substring(pos, path.Length - pos)) + " " + character.Name);
+                }
+                Console.WriteLine("Character Details: [number]");
+                Console.WriteLine("[N]ext / [P]revious / [M]enu");
+                var choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "N":
+                        i++;
+                        break;
+                    case "P":
+                        i--;
+                        break;
+                    case "M":
+                        MainMenu();
+                        break;
+                }
+
+            }
+        }
+
+        private static void MainMenu()
+        {
+            Console.WriteLine("What would you like to do?");
+            Console.WriteLine("View [C]haracter List");
+            var selection = Console.ReadLine().ToUpper();
+            switch (selection)
+            {
+                case "C":
+                    CharacterList();
+                    break;
             }
         }
     }
-}
+    }
+

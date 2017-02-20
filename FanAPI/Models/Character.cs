@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace FanAPI.Models
 {
-
     class Character
     {
+        public Uri URL { get; set; }
         public string Name { get; set; }
         public string Gender { get; set; }
         public List<Uri> Allegiances { get; set; }
@@ -27,12 +27,17 @@ namespace FanAPI.Models
             return allegiances;
         }
 
-        //public Book BookDetail(HttpClient client)
-        //{
-        //    var response = client.GetAsync(Books).Result;
-        //    Book books = response.Content.ReadAsAsync<Book>().Result;
-        //    return books;
-        //}
+        public List<Book> BookDetail(HttpClient client)
+        {
+            List<Book> books = new List<Book>();
+            foreach (Uri novel in Books)
+            {
+                var response = client.GetAsync(novel).Result;
+                Book b = response.Content.ReadAsAsync<Book>().Result;
+                books.Add(b);
+            }
+            return books;
+        }
         
     }
 }

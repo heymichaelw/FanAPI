@@ -1,0 +1,20 @@
+﻿var jon = GetCharacter("583");
+            List<House> jonshouses = jon.AllegianceDetail(client);
+            List<Book> jonsbooks = jon.BookDetail(client);
+            foreach (House house in jonshouses)
+            {
+                Console.WriteLine(house.Name);
+            }
+            foreach (Book book in jonsbooks)
+            {
+                Console.WriteLine(book.Name);
+            }
+
+finding last number in url (ID)
+var characters = GetAll();
+            foreach (var character in characters)
+            {
+                string path = character.URL.ToString();
+                int pos = path.LastIndexOf("/") + 1;
+                Console.WriteLine((path.Substring(pos, path.Length - pos)) + " " + character.Name);
+            }
