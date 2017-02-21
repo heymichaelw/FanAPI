@@ -27,6 +27,19 @@ namespace FanAPI
             return allcharacters;
         }
 
+        static List<House> GetAllHouses(int pagenumber)
+        {
+            var response = client.GetAsync($"houses?page={pagenumber}").Result;
+            List<House> allhouses = response.Content.ReadAsAsync<List<House>>().Result;
+            return allhouses;
+        }
+
+        static House GetHouse(string id)
+        {
+            var response = client.GetAsync($"houses/{id}").Result;
+            return response.Content.ReadAsAsync<House>().Result;
+        }
+
 
         static Character GetCharacter(string id)
         {
@@ -49,8 +62,20 @@ namespace FanAPI
             {
                 Console.WriteLine(book.Name);
             }
+            Console.WriteLine("                          ");
+            Console.WriteLine("Press enter to continue");
+            Console.ReadLine();
         }
 
+        private static void GetHouseDetails(string id)
+        {
+            var house = GetHouse(id);
+            Console.WriteLine(house.Name);
+            Console.WriteLine(house.Region);
+            Console.WriteLine("                          ");
+            Console.WriteLine("Press enter to continue");
+            Console.ReadLine();
+        }
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to the ASOIAF API");
@@ -73,7 +98,7 @@ namespace FanAPI
                 Console.WriteLine("Character Details: [number]");
                 Console.WriteLine("[N]ext / [P]revious / [M]enu");
                 var choice = Console.ReadLine();
-           
+
                 switch (choice)
                 {
                     case "N":
@@ -97,14 +122,53 @@ namespace FanAPI
         {
             Console.WriteLine("What would you like to do?");
             Console.WriteLine("View [C]haracter List");
+            Console.WriteLine("View [H]ouse List");
             var selection = Console.ReadLine().ToUpper();
             switch (selection)
             {
                 case "C":
                     CharacterList();
                     break;
+                case "H":
+                    HouseList();
+                    break;
+            }
+        }
+
+        private static void HouseList()
+        {
+            for (int i = 1; i < 46;)
+            {
+                var houses = GetAllHouses(i);
+                foreach (var house in houses)
+                {
+                    string path = house.URL.ToString();
+                    int pos = path.LastIndexOf("/") + 1;
+                    Console.WriteLine(" ");
+                    Console.WriteLine((path.Substring(pos, path.Length - pos)) + " " + house.Name);
+                }
+                Console.WriteLine("House Details: [number]");
+                Console.WriteLine("[N]ext / [P]revious / [M]enu");
+                var choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "N":
+                        i++;
+                        break;
+                    case "P":
+                        i--;
+                        break;
+                    case "M":
+                        MainMenu();
+                        break;
+                    default:
+                        GetHouseDetails(choice);
+                        break;
+                }
+
             }
         }
     }
-    }
+}
 

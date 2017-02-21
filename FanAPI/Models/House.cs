@@ -8,6 +8,7 @@ namespace FanAPI.Models
 {
     class House
     {
+        public Uri URL { get; set; }
         public string Name { get; set; }
         public string Region { get; set; }
     }
