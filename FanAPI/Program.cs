@@ -34,12 +34,24 @@ namespace FanAPI
             return allhouses;
         }
 
+        static List<Book> GetAllBooks(int pagenumber)
+        {
+            var response = client.GetAsync($"books?page={pagenumber}").Result;
+            List<Book> allbooks = response.Content.ReadAsAsync<List<Book>>().Result;
+            return allbooks;
+        }
+
         static House GetHouse(string id)
         {
             var response = client.GetAsync($"houses/{id}").Result;
             return response.Content.ReadAsAsync<House>().Result;
         }
 
+        static Book GetBook(string id)
+        {
+            var response = client.GetAsync($"books/{id}").Result;
+            return response.Content.ReadAsAsync<Book>().Result;
+        }
 
         static Character GetCharacter(string id)
         {
@@ -76,11 +88,15 @@ namespace FanAPI
             Console.WriteLine("Press enter to continue");
             Console.ReadLine();
         }
-        static void Main(string[] args)
+
+        private static void GetBookDetails(string id)
         {
-            Console.WriteLine("Welcome to the ASOIAF API");
-            SetUpClient();
-            MainMenu();
+            var book = GetBook(id);
+            Console.WriteLine(book.Name);
+            Console.WriteLine(book.numberOfPages);
+            Console.WriteLine("                          ");
+            Console.WriteLine("Press enter to continue");
+            Console.ReadLine();
         }
 
         private static void CharacterList()
@@ -118,23 +134,6 @@ namespace FanAPI
             }
         }
 
-        private static void MainMenu()
-        {
-            Console.WriteLine("What would you like to do?");
-            Console.WriteLine("View [C]haracter List");
-            Console.WriteLine("View [H]ouse List");
-            var selection = Console.ReadLine().ToUpper();
-            switch (selection)
-            {
-                case "C":
-                    CharacterList();
-                    break;
-                case "H":
-                    HouseList();
-                    break;
-            }
-        }
-
         private static void HouseList()
         {
             for (int i = 1; i < 46;)
@@ -168,6 +167,69 @@ namespace FanAPI
                 }
 
             }
+        }
+
+        private static void BookList()
+        {
+            for (int i = 1; i < 3;)
+            {
+                var books = GetAllBooks(i);
+                foreach (var book in books)
+                {
+                    string path = book.URL.ToString();
+                    int pos = path.LastIndexOf("/") + 1;
+                    Console.WriteLine(" ");
+                    Console.WriteLine((path.Substring(pos, path.Length - pos)) + " " + book.Name);
+                }
+                Console.WriteLine("Book Details: [number]");
+                Console.WriteLine("[N]ext / [P]revious / [M]enu");
+                var choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "N":
+                        i++;
+                        break;
+                    case "P":
+                        i--;
+                        break;
+                    case "M":
+                        MainMenu();
+                        break;
+                    default:
+                        GetHouseDetails(choice);
+                        break;
+                }
+
+            }
+        }
+
+        private static void MainMenu()
+        {
+            Console.WriteLine("What would you like to do?");
+            Console.WriteLine("View [C]haracter List");
+            Console.WriteLine("View [H]ouse List");
+            Console.WriteLine("View [B]ook List");
+            var selection = Console.ReadLine().ToUpper();
+            switch (selection)
+            {
+                case "C":
+                    CharacterList();
+                    break;
+                case "H":
+                    HouseList();
+                    break;
+                case "B"
+                    BookList();
+                    break;
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Welcome to the ASOIAF API");
+            SetUpClient();
+            MainMenu();
         }
     }
 }

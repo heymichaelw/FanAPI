@@ -8,7 +8,8 @@ namespace FanAPI.Models
 {
     class Book
     {
+        public Uri URL { get; set; }
         public string Name { get; set; }
-        public string NumberOfPages { get; set; }
+        public string numberOfPages { get; set; }
     }
 }
