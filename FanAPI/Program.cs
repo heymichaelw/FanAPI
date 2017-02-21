@@ -34,6 +34,13 @@ namespace FanAPI
             return response.Content.ReadAsAsync<Character>().Result;
         }
 
+        static void GetCharacterDetails(string id)
+        {
+            var character = GetCharacter(id);
+            Console.WriteLine(character.Name);
+            Console.WriteLine(character.Gender);
+        }
+
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to the ASOIAF API");
@@ -56,6 +63,7 @@ namespace FanAPI
                 Console.WriteLine("Character Details: [number]");
                 Console.WriteLine("[N]ext / [P]revious / [M]enu");
                 var choice = Console.ReadLine();
+           
                 switch (choice)
                 {
                     case "N":
@@ -66,6 +74,9 @@ namespace FanAPI
                         break;
                     case "M":
                         MainMenu();
+                        break;
+                    default:
+                        GetCharacterDetails(choice);
                         break;
                 }
 
