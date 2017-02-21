@@ -219,7 +219,7 @@ namespace FanAPI
                 case "H":
                     HouseList();
                     break;
-                case "B"
+                case "B":
                     BookList();
                     break;
             }
