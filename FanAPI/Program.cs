@@ -34,11 +34,21 @@ namespace FanAPI
             return response.Content.ReadAsAsync<Character>().Result;
         }
 
-        static void GetCharacterDetails(string id)
+        private static void GetCharacterDetails(string id)
         {
             var character = GetCharacter(id);
             Console.WriteLine(character.Name);
             Console.WriteLine(character.Gender);
+            List<House> characterhouses = character.AllegianceDetail(client);
+            List<Book> characterbooks = character.BookDetail(client);
+            foreach (House house in characterhouses)
+            {
+                Console.WriteLine(house.Name);
+            }
+            foreach (Book book in characterbooks)
+            {
+                Console.WriteLine(book.Name);
+            }
         }
 
         static void Main(string[] args)
